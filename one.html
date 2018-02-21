@@ -1,0 +1,112 @@
+<!DOCTYPE>
+<HTML>
+<title>
+</title>
+
+<body>
+    <canvas id="canvas" style="border: 1px solid #002266"></canvas>
+    <script>
+        var context = document.getElementById('canvas').getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        //console.log(width, height);
+        var particleno = 50;
+
+        function mouse() {
+            var x = 0;
+            var y = 0;
+        };
+
+        addEventListener('mousemove', event => {
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+            //console.log(mouse.x, mouse.y);
+            //full();
+        });
+
+        function randomize(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function draw(x, y, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.radians = Math.random() * Math.PI * 2;
+            this.velocity = 0.05;
+            this.color = color;
+            this.distancefromcentere = randomize(50, 120);
+            this.lastmouse = {
+                x: x,
+                y: y
+            };
+            this.update = () => {
+                const lastpoint = {
+                    x: mouse.x,
+                    y: mouse.y
+                };
+                this.lastmouse.x = this.lastmouse.x - mouse.y;
+                //console.log(this.lastmouse.x, mouse.x);
+                this.radians = this.radians + this.velocity;
+                this.x = this.x + Math.sin(this.radians) * this.distancefromcentere;
+                this.y = this.y + Math.cos(this.radians) * this.distancefromcentere;
+                this.line(lastpoint);
+            };
+            /*this.circle = () => {
+            	context.beginPath();
+            	context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+            	context.closePath();
+            	context.fillStyle = "#000fff";
+            	context.fill();
+            };*/
+            this.line = lastpoint => {
+                context.beginPath();
+                context.moveTo(lastpoint.x, lastpoint.y);
+                context.lineTo(this.x, this.y);
+                context.width = this.radius;
+                context.closePath();
+                context.strokeStyle = color;
+                context.stroke();
+                //console.log(lastpoint.x,lastpoint.y);
+            }
+        };
+        var paticles;
+
+        function full() {
+            paticles = []
+            for (let i = 0; i < particleno; i++) {
+                const radius = (Math.random() * 2) + 10;
+                const color = getRandomColor();
+                paticles.push(new draw(600, 200, radius, color));
+                //paticles.push(new draw(0, 200, radius, color));
+                //paticles.push(new draw(1200, 200, radius, color));
+            }
+            //console.log(paticles);
+
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            context.fillStyle = 'rgba(0,0,0,0.05)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            paticles.forEach(paticles => {
+                paticles.update();
+            });
+            //console.log("hii");
+        }
+        full();
+        animate();
+
+    </script>
+</body>
+<HTML>
