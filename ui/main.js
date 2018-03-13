@@ -6,7 +6,7 @@ but.onclick=function(){
         {
             if(requst.status===200)
             {
-                
+                console.log("done");
             }
         }
     }
